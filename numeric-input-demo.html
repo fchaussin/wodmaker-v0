@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enhanced Numeric Input Demo</title>
+    <link rel="stylesheet" href="app/globals.css">
+    <style>
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            background-color: #0a0a0a;
+            color: #ffffff;
+            margin: 0;
+            padding: 2rem;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+        
+        .header h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, #ffffff, #a0a0a0);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .header p {
+            font-size: 1.2rem;
+            color: #a0a0a0;
+            margin-bottom: 2rem;
+        }
+        
+        .demo-section {
+            background-color: #1a1a1a;
+            border: 1px solid #333;
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .demo-section h2 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: #ffffff;
+        }
+        
+        .demo-section p {
+            color: #a0a0a0;
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-group label {
+            display: block;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+            color: #ffffff;
+        }
+        
+        .form-group input {
+            width: 100%;
+            max-width: 200px;
+            padding: 0.75rem;
+            background-color: #2a2a2a;
+            border: 1px solid #444;
+            border-radius: 8px;
+            color: #ffffff;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .form-group input:hover {
+            border-color: #666;
+        }
+        
+        .form-group input:focus {
+            outline: none;
+            border-color: #0070f3;
+            box-shadow: 0 0 0 2px rgba(0, 112, 243, 0.2);
+        }
+        
+        .form-row {
+            display: flex;
+            gap: 2rem;
+            flex-wrap: wrap;
+        }
+        
+        .form-row .form-group {
+            flex: 1;
+            min-width: 200px;
+        }
+        
+        .instructions {
+            background-color: #1a2332;
+            border: 1px solid #2a3441;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .instructions h3 {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: #60a5fa;
+        }
+        
+        .instructions ul {
+            margin: 0;
+            padding-left: 1.5rem;
+            color: #a0a0a0;
+        }
+        
+        .instructions li {
+            margin-bottom: 0.5rem;
+        }
+        
+        .dynamic-demo {
+            text-align: center;
+            padding: 2rem 0;
+        }
+        
+        .add-input-btn {
+            background-color: #0070f3;
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .add-input-btn:hover {
+            background-color: #0051a2;
+        }
+        
+        .dynamic-inputs {
+            margin-top: 2rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            align-items: center;
+        }
+        
+        .dynamic-input-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .remove-btn {
+            background-color: #dc2626;
+            color: white;
+            border: none;
+            padding: 0.5rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.875rem;
+        }
+        
+        .remove-btn:hover {
+            background-color: #b91c1c;
+        }
+        
+        @media (max-width: 640px) {
+            body {
+                padding: 1rem;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .form-row {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .form-row .form-group {
+                min-width: auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Enhanced Numeric Input</h1>
+            <p>Touch-optimized numeric input with fullscreen modal interface</p>
+        </div>
+        
+        <div class="instructions">
+            <h3>How to Use</h3>
+            <ul>
+                <li><strong>Tap any number input</strong> to open the fullscreen numeric keypad</li>
+                <li><strong>Use + and - buttons</strong> to increment/decrement values</li>
+                <li><strong>Hold buttons</strong> for accelerated value changes</li>
+                <li><strong>Tap the number</strong> to use your device's native keypad</li>
+                <li><strong>Keyboard shortcuts:</strong> Arrow keys, Enter to save, Escape to cancel</li>
+                <li><strong>Save, Cancel, or Reset</strong> using the action buttons</li>
+            </ul>
+        </div>
+        
+        <div class="demo-section">
+            <h2>Basic Examples</h2>
+            <p>Standard numeric inputs with different constraints and step values.</p>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="quantity">Quantity (1-100)</label>
+                    <input type="number" id="quantity" name="quantity" min="1" max="100" step="1" value="5">
+                </div>
+                
+                <div class="form-group">
+                    <label for="price">Price ($0.00-$999.99)</label>
+                    <input type="number" id="price" name="price" min="0" max="999.99" step="0.01" value="29.99">
+                </div>
+            </div>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="temperature">Temperature (-50°C to 50°C)</label>
+                    <input type="number" id="temperature" name="temperature" min="-50" max="50" step="0.5" value="22">
+                </div>
+                
+                <div class="form-group">
+                    <label for="percentage">Percentage (0-100%)</label>
+                    <input type="number" id="percentage" name="percentage" min="0" max="100" step="5" value="75">
+                </div>
+            </div>
+        </div>
+        
+        <div class="demo-section">
+            <h2>Advanced Examples</h2>
+            <p>Inputs with larger ranges and different step increments.</p>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="weight">Weight (kg)</label>
+                    <input type="number" id="weight" name="weight" min="0" max="1000" step="0.1" value="70.5">
+                </div>
+                
+                <div class="form-group">
+                    <label for="year">Year</label>
+                    <input type="number" id="year" name="year" min="1900" max="2100" step="1" value="2024">
+                </div>
+            </div>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="large-number">Large Number</label>
+                    <input type="number" id="large-number" name="large-number" min="0" max="999999" step="100" value="12500">
+                </div>
+                
+                <div class="form-group">
+                    <label for="decimal">Decimal (0.001 steps)</label>
+                    <input type="number" id="decimal" name="decimal" min="0" max="10" step="0.001" value="3.142">
+                </div>
+            </div>
+        </div>
+        
+        <div class="demo-section">
+            <h2>Dynamic Inputs</h2>
+            <p>Test the automatic binding of dynamically added inputs.</p>
+            
+            <div class="dynamic-demo">
+                <button class="add-input-btn" onclick="addDynamicInput()">Add New Input</button>
+                <div class="dynamic-inputs" id="dynamic-inputs"></div>
+            </div>
+        </div>
+        
+        <div class="demo-section">
+            <h2>Disabled Example</h2>
+            <p>This input has the enhanced behavior disabled using the data attribute.</p>
+            
+            <div class="form-group">
+                <label for="disabled-input">Standard Input (Enhancement Disabled)</label>
+                <input type="number" id="disabled-input" name="disabled-input" min="0" max="100" step="1" value="10" data-numeric-modal-disabled="true">
+            </div>
+        </div>
+    </div>
+    
+    <script src="js/numeric-input-core.js"></script>
+    <script src="js/numeric-input-binding.js"></script>
+    
+    <script>
+        let dynamicInputCounter = 0;
+        
+        function addDynamicInput() {
+            dynamicInputCounter++;
+            const container = document.getElementById('dynamic-inputs');
+            
+            const inputItem = document.createElement('div');
+            inputItem.className = 'dynamic-input-item';
+            
+            const label = document.createElement('label');
+            label.textContent = `Dynamic Input ${dynamicInputCounter}: `;
+            label.style.color = '#ffffff';
+            label.style.fontWeight = '500';
+            
+            const input = document.createElement('input');
+            input.type = 'number';
+            input.min = '0';
+            input.max = '1000';
+            input.step = '1';
+            input.value = Math.floor(Math.random() * 100);
+            input.style.padding = '0.75rem';
+            input.style.backgroundColor = '#2a2a2a';
+            input.style.border = '1px solid #444';
+            input.style.borderRadius = '8px';
+            input.style.color = '#ffffff';
+            input.style.fontSize = '1rem';
+            input.style.cursor = 'pointer';
+            input.style.width = '120px';
+            
+            const removeBtn = document.createElement('button');
+            removeBtn.className = 'remove-btn';
+            removeBtn.textContent = 'Remove';
+            removeBtn.onclick = () => {
+                container.removeChild(inputItem);
+            };
+            
+            inputItem.appendChild(label);
+            inputItem.appendChild(input);
+            inputItem.appendChild(removeBtn);
+            container.appendChild(inputItem);
+        }
+        
+        // Add some initial dynamic inputs
+        addDynamicInput();
+        addDynamicInput();
+        
+        // Log input changes for demonstration
+        document.addEventListener('change', (e) => {
+            if (e.target.type === 'number') {
+                console.log(`Input ${e.target.id || 'unnamed'} changed to: ${e.target.value}`);
+            }
+        });
+    </script>
+</body>
+</html>
