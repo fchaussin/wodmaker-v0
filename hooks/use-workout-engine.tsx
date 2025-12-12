@@ -41,8 +41,12 @@ export function useWorkoutEngine({ config, onPhaseChange, onWorkoutComplete }: U
     isActive: false,
   })
 
+  const [exerciseStartTime, setExerciseStartTime] = useState<number | null>(null)
+  const [exerciseDuration, setExerciseDuration] = useState(0)
+
   const intervalRef = useRef<NodeJS.Timeout | null>(null)
   const audioContextRef = useRef<AudioContext | null>(null)
+  const exerciseTimerRef = useRef<NodeJS.Timeout | null>(null)
 
   const playBeep = useCallback((frequency = 800, duration = 200) => {
     if (!audioContextRef.current) {
@@ -65,6 +69,36 @@ export function useWorkoutEngine({ config, onPhaseChange, onWorkoutComplete }: U
     oscillator.stop(audioContextRef.current.currentTime + duration / 1000)
   }, [])
 
+  useEffect(() => {
+    if (state.currentPhase === "work" && state.isRunning && !config.workTime) {
+      // Manual exercise - track timing
+      if (!exerciseStartTime) {
+        setExerciseStartTime(Date.now())
+        setExerciseDuration(0)
+      }
+
+      exerciseTimerRef.current = setInterval(() => {
+        if (exerciseStartTime) {
+          setExerciseDuration(Math.floor((Date.now() - exerciseStartTime) / 1000))
+        }
+      }, 1000)
+    } else {
+      if (exerciseTimerRef.current) {
+        clearInterval(exerciseTimerRef.current)
+      }
+      if (state.currentPhase !== "work") {
+        setExerciseStartTime(null)
+        setExerciseDuration(0)
+      }
+    }
+
+    return () => {
+      if (exerciseTimerRef.current) {
+        clearInterval(exerciseTimerRef.current)
+      }
+    }
+  }, [state.currentPhase, state.isRunning, config.workTime, exerciseStartTime])
+
   const start = useCallback(() => {
     setState({
       currentPhase: "prepare",
@@ -74,6 +108,8 @@ export function useWorkoutEngine({ config, onPhaseChange, onWorkoutComplete }: U
       isRunning: true,
       isActive: true,
     })
+    setExerciseStartTime(null)
+    setExerciseDuration(0)
   }, [config.prepareTime])
 
   const pause = useCallback(() => {
@@ -88,6 +124,9 @@ export function useWorkoutEngine({ config, onPhaseChange, onWorkoutComplete }: U
     if (intervalRef.current) {
       clearInterval(intervalRef.current)
     }
+    if (exerciseTimerRef.current) {
+      clearInterval(exerciseTimerRef.current)
+    }
     setState({
       currentPhase: "prepare",
       timeRemaining: 0,
@@ -96,9 +135,18 @@ export function useWorkoutEngine({ config, onPhaseChange, onWorkoutComplete }: U
       isRunning: false,
       isActive: false,
     })
+    setExerciseStartTime(null)
+    setExerciseDuration(0)
   }, [])
 
   const advancePhase = useCallback(() => {
+    if (state.currentPhase === "work" && !config.workTime && exerciseStartTime) {
+      const duration = Math.floor((Date.now() - exerciseStartTime) / 1000)
+      console.log(
+        `[v0] Manual exercise completed - Duration: ${duration}s, Round: ${state.currentRound}, Cycle: ${state.currentCycle}`,
+      )
+    }
+
     setState((prev) => {
       let nextPhase: WorkoutPhase = "rest"
       let nextTime = config.restTime
@@ -131,7 +179,16 @@ export function useWorkoutEngine({ config, onPhaseChange, onWorkoutComplete }: U
         isRunning: nextPhase !== "finished",
       }
     })
-  }, [config, playBeep, onPhaseChange, onWorkoutComplete])
+  }, [
+    config,
+    playBeep,
+    onPhaseChange,
+    onWorkoutComplete,
+    state.currentPhase,
+    state.currentRound,
+    state.currentCycle,
+    exerciseStartTime,
+  ])
 
   const formatTime = useCallback((time: number) => {
     const minutes = Math.floor(time / 60)
@@ -263,6 +320,9 @@ export function useWorkoutEngine({ config, onPhaseChange, onWorkoutComplete }: U
       if (intervalRef.current) {
         clearInterval(intervalRef.current)
       }
+      if (exerciseTimerRef.current) {
+        clearInterval(exerciseTimerRef.current)
+      }
     }
   }, [])
 
@@ -276,5 +336,6 @@ export function useWorkoutEngine({ config, onPhaseChange, onWorkoutComplete }: U
     formatTime,
     getPhaseColor,
     getPhaseText,
+    exerciseDuration,
   }
 }

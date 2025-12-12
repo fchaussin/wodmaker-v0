@@ -54,9 +54,14 @@ const StrengthComponent = forwardRef<StrengthComponentRef>((props, ref) => {
   })
 
   const [singleCycle, setSingleCycle] = useState(false)
+  const [exerciseStartTime, setExerciseStartTime] = useState<number | null>(null)
+  const [exerciseDuration, setExerciseDuration] = useState(0)
+  const [currentReps, setCurrentReps] = useState(config.repetitions)
+  const [currentLoad, setCurrentLoad] = useState(config.load)
 
   const intervalRef = useRef<NodeJS.Timeout | null>(null)
   const audioContextRef = useRef<AudioContext | null>(null)
+  const exerciseTimerRef = useRef<NodeJS.Timeout | null>(null)
 
   useImperativeHandle(ref, () => ({
     pause: () => {
@@ -65,6 +70,40 @@ const StrengthComponent = forwardRef<StrengthComponentRef>((props, ref) => {
       }
     },
   }))
+
+  useEffect(() => {
+    if (state.currentPhase === "work" && state.isRunning) {
+      if (!exerciseStartTime) {
+        setExerciseStartTime(Date.now())
+        setExerciseDuration(0)
+      }
+
+      exerciseTimerRef.current = setInterval(() => {
+        if (exerciseStartTime) {
+          setExerciseDuration(Math.floor((Date.now() - exerciseStartTime) / 1000))
+        }
+      }, 1000)
+    } else {
+      if (exerciseTimerRef.current) {
+        clearInterval(exerciseTimerRef.current)
+      }
+      if (state.currentPhase !== "work") {
+        setExerciseStartTime(null)
+        setExerciseDuration(0)
+      }
+    }
+
+    return () => {
+      if (exerciseTimerRef.current) {
+        clearInterval(exerciseTimerRef.current)
+      }
+    }
+  }, [state.currentPhase, state.isRunning, exerciseStartTime])
+
+  useEffect(() => {
+    setCurrentReps(config.repetitions)
+    setCurrentLoad(config.load)
+  }, [config.repetitions, config.load])
 
   const playBeep = (frequency = 800, duration = 200) => {
     if (!audioContextRef.current) {
@@ -96,9 +135,16 @@ const StrengthComponent = forwardRef<StrengthComponentRef>((props, ref) => {
       isRunning: true,
       view: "workout",
     })
+    setCurrentReps(config.repetitions)
+    setCurrentLoad(config.load)
   }
 
   const completeSet = () => {
+    if (exerciseStartTime) {
+      const duration = Math.floor((Date.now() - exerciseStartTime) / 1000)
+      console.log(`[v0] Set completed - Duration: ${duration}s, Reps: ${currentReps}, Load: ${currentLoad}kg`)
+    }
+
     setState((prev) => {
       let nextPhase: StrengthPhase = "rest"
       let nextTime = config.restTime
@@ -129,11 +175,17 @@ const StrengthComponent = forwardRef<StrengthComponentRef>((props, ref) => {
         isRunning: nextPhase !== "finished",
       }
     })
+
+    setCurrentReps(config.repetitions)
+    setCurrentLoad(config.load)
   }
 
   const reset = () => {
     if (intervalRef.current) {
       clearInterval(intervalRef.current)
+    }
+    if (exerciseTimerRef.current) {
+      clearInterval(exerciseTimerRef.current)
     }
     setState({
       currentPhase: "prepare",
@@ -143,6 +195,10 @@ const StrengthComponent = forwardRef<StrengthComponentRef>((props, ref) => {
       isRunning: false,
       view: "config",
     })
+    setExerciseStartTime(null)
+    setExerciseDuration(0)
+    setCurrentReps(config.repetitions)
+    setCurrentLoad(config.load)
   }
 
   const formatTime = (time: number) => {
@@ -408,9 +464,56 @@ const StrengthComponent = forwardRef<StrengthComponentRef>((props, ref) => {
             </div>
 
             {state.currentPhase === "work" ? (
-              <div className="text-center">
-                <div className="text-3xl sm:text-4xl font-bold mb-2">{config.repetitions} Reps</div>
-                {config.load > 0 && <div className="text-xl sm:text-2xl opacity-90">@ {config.load}kg</div>}
+              <div className="text-center space-y-4">
+                <div className="text-3xl sm:text-4xl font-bold mb-2">{currentReps} Reps</div>
+                {currentLoad > 0 && <div className="text-xl sm:text-2xl opacity-90">@ {currentLoad}kg</div>}
+                <div className="text-sm opacity-75">Duration: {formatTime(exerciseDuration)}</div>
+                <div className="flex justify-center gap-4 mt-4">
+                  <div className="flex flex-col items-center gap-2">
+                    <div className="text-xs opacity-75">Reps</div>
+                    <div className="flex items-center gap-2">
+                      <Button
+                        size="sm"
+                        variant="secondary"
+                        className="w-8 h-8 p-0 bg-white/10 hover:bg-white/20"
+                        onClick={() => setCurrentReps(Math.max(1, currentReps - 1))}
+                      >
+                        -
+                      </Button>
+                      <span className="w-8 text-center text-sm">{currentReps}</span>
+                      <Button
+                        size="sm"
+                        variant="secondary"
+                        className="w-8 h-8 p-0 bg-white/10 hover:bg-white/20"
+                        onClick={() => setCurrentReps(currentReps + 1)}
+                      >
+                        +
+                      </Button>
+                    </div>
+                  </div>
+                  <div className="flex flex-col items-center gap-2">
+                    <div className="text-xs opacity-75">Load (kg)</div>
+                    <div className="flex items-center gap-2">
+                      <Button
+                        size="sm"
+                        variant="secondary"
+                        className="w-8 h-8 p-0 bg-white/10 hover:bg-white/20"
+                        onClick={() => setCurrentLoad(Math.max(0, currentLoad - 2.5))}
+                      >
+                        -
+                      </Button>
+                      <span className="w-12 text-center text-sm">{currentLoad}</span>
+                      <Button
+                        size="sm"
+                        variant="secondary"
+                        className="w-8 h-8 p-0 bg-white/10 hover:bg-white/20"
+                        onClick={() => setCurrentLoad(currentLoad + 2.5)}
+                      >
+                        +
+                      </Button>
+                    </div>
+                  </div>
+                </div>
               </div>
             ) : (
               <div className="text-6xl sm:text-7xl font-mono text-center font-bold">

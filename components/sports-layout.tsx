@@ -3,7 +3,7 @@
 import type React from "react"
 import { Button } from "@/components/ui/button"
 
-type Tool = "stopwatch" | "tabata" | "strength" | "exercise"
+type Tool = "stopwatch" | "tabata" | "strength" | "exercise" | "program"
 
 interface SportsLayoutProps {
   children: React.ReactNode
@@ -28,34 +28,41 @@ export default function SportsLayout({ children, currentTool, onToolChange, onTa
 
         {/* Bottom tab navigation */}
         <div className="flex justify-center p-4 pt-2">
-          <div className="flex bg-muted rounded-lg p-1 w-full">
+          <div className="grid grid-cols-5 bg-muted rounded-lg p-1 w-full gap-1">
             <Button
               variant={currentTool === "stopwatch" ? "default" : "ghost"}
               onClick={() => handleToolChange("stopwatch")}
-              className="flex-1 text-xs sm:text-sm"
+              className="text-xs"
             >
-              Stopwatch
+              Timer
             </Button>
             <Button
               variant={currentTool === "tabata" ? "default" : "ghost"}
               onClick={() => handleToolChange("tabata")}
-              className="flex-1 text-xs sm:text-sm"
+              className="text-xs"
             >
               Tabata
             </Button>
             <Button
               variant={currentTool === "strength" ? "default" : "ghost"}
               onClick={() => handleToolChange("strength")}
-              className="flex-1 text-xs sm:text-sm"
+              className="text-xs"
             >
               Strength
             </Button>
             <Button
               variant={currentTool === "exercise" ? "default" : "ghost"}
               onClick={() => handleToolChange("exercise")}
-              className="flex-1 text-xs sm:text-sm"
+              className="text-xs"
             >
               Exercise
+            </Button>
+            <Button
+              variant={currentTool === "program" ? "default" : "ghost"}
+              onClick={() => handleToolChange("program")}
+              className="text-xs"
+            >
+              Program
             </Button>
           </div>
         </div>

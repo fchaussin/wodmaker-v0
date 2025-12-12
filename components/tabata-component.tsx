@@ -111,6 +111,54 @@ const TabataComponent = forwardRef<TabataComponentRef>((props, ref) => {
     })
   }
 
+  const skipPhase = () => {
+    setState((prev) => {
+      let nextPhase: TabataPhase = prev.currentPhase
+      let nextTime = 0
+      let nextRound = prev.currentRound
+      let nextCycle = prev.currentCycle
+
+      switch (prev.currentPhase) {
+        case "prepare":
+          nextPhase = "work"
+          nextTime = config.workTime
+          break
+        case "work":
+          if (prev.currentRound < config.rounds) {
+            nextPhase = "rest"
+            nextTime = config.restTime
+            nextRound = prev.currentRound + 1
+          } else if (prev.currentCycle < config.cycles) {
+            nextPhase = "cycleRest"
+            nextTime = config.restBetweenCycles
+            nextRound = 1
+            nextCycle = prev.currentCycle + 1
+          } else {
+            nextPhase = "finished"
+            nextTime = 0
+          }
+          break
+        case "rest":
+          nextPhase = "work"
+          nextTime = config.workTime
+          break
+        case "cycleRest":
+          nextPhase = "work"
+          nextTime = config.workTime
+          break
+      }
+
+      return {
+        ...prev,
+        currentPhase: nextPhase,
+        timeRemaining: nextTime,
+        currentRound: nextRound,
+        currentCycle: nextCycle,
+        isRunning: nextPhase !== "finished",
+      }
+    })
+  }
+
   const formatTime = (time: number) => {
     const minutes = Math.floor(time / 60)
     const seconds = time % 60
@@ -366,9 +414,19 @@ const TabataComponent = forwardRef<TabataComponentRef>((props, ref) => {
 
             <div className="flex justify-center gap-3">
               {state.currentPhase !== "finished" && (
-                <Button onClick={pauseResume} variant="secondary" size="sm" className="px-4 sm:px-6">
-                  {state.isRunning ? "Pause" : "Resume"}
-                </Button>
+                <>
+                  <Button onClick={pauseResume} variant="secondary" size="sm" className="px-4 sm:px-6">
+                    {state.isRunning ? "Pause" : "Resume"}
+                  </Button>
+                  <Button
+                    onClick={skipPhase}
+                    variant="secondary"
+                    size="sm"
+                    className="px-4 sm:px-6 bg-white/10 hover:bg-white/20"
+                  >
+                    Skip
+                  </Button>
+                </>
               )}
               <Button
                 onClick={reset}

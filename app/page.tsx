@@ -6,8 +6,9 @@ import StopwatchComponent from "@/components/stopwatch-component"
 import TabataComponent from "@/components/tabata-component"
 import StrengthComponent from "@/components/strength-component"
 import ExercisePlayer from "@/components/exercise-player"
+import { ProgramBuilder } from "@/components/program-builder"
 
-type Tool = "stopwatch" | "tabata" | "strength" | "exercise"
+type Tool = "stopwatch" | "tabata" | "strength" | "exercise" | "program"
 
 export default function SportsUtilityApp() {
   const [currentTool, setCurrentTool] = useState<Tool>("stopwatch")
@@ -39,6 +40,7 @@ export default function SportsUtilityApp() {
       {currentTool === "tabata" && <TabataComponent ref={tabataRef} />}
       {currentTool === "strength" && <StrengthComponent ref={strengthRef} />}
       {currentTool === "exercise" && <ExercisePlayer ref={exerciseRef} />}
+      {currentTool === "program" && <ProgramBuilder />}
     </SportsLayout>
   )
 }
