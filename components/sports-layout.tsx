@@ -22,9 +22,9 @@ export default function SportsLayout({ children, currentTool, onToolChange, onTa
 
   return (
     <div className="h-dvh bg-background text-foreground flex flex-col overflow-hidden">
-      <div className="flex-1 flex flex-col max-w-sm sm:max-w-md mx-auto w-full">
+      <div className="flex-1 flex flex-col max-w-sm sm:max-w-md mx-auto w-full min-h-0">
         {/* Main content area */}
-        <div className="flex-1 flex flex-col min-h-0 p-4">{children}</div>
+        <div className="flex-1 flex flex-col min-h-0 p-4 overflow-hidden">{children}</div>
 
         {/* Bottom tab navigation */}
         <div className="flex justify-center p-4 pt-2">
