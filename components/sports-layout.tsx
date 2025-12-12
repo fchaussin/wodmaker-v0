@@ -21,7 +21,7 @@ export default function SportsLayout({ children, currentTool, onToolChange, onTa
   }
 
   return (
-    <div className="h-screen bg-background text-foreground flex flex-col overflow-hidden">
+    <div className="h-dvh bg-background text-foreground flex flex-col overflow-hidden">
       <div className="flex-1 flex flex-col max-w-sm sm:max-w-md mx-auto w-full">
         {/* Main content area */}
         <div className="flex-1 flex flex-col min-h-0 p-4">{children}</div>
