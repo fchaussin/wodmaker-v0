@@ -1,0 +1,48 @@
+{
+  "name": "WOD Maker - Sports Utility App",
+  "short_name": "WOD Maker",
+  "description": "Complete sports utility app with stopwatch, tabata timer, strength training, and workout program builder",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0a0a0a",
+  "theme_color": "#0a0a0a",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "/icon-192x192.jpg",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icon-512x512.jpg",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["sports", "fitness", "health"],
+  "shortcuts": [
+    {
+      "name": "Stopwatch",
+      "short_name": "Stopwatch",
+      "description": "Quick access to stopwatch",
+      "url": "/?tab=stopwatch",
+      "icons": [{ "src": "/icon-192x192.jpg", "sizes": "192x192" }]
+    },
+    {
+      "name": "Tabata Timer",
+      "short_name": "Tabata",
+      "description": "Quick access to Tabata timer",
+      "url": "/?tab=tabata",
+      "icons": [{ "src": "/icon-192x192.jpg", "sizes": "192x192" }]
+    },
+    {
+      "name": "Strength Training",
+      "short_name": "Strength",
+      "description": "Quick access to strength training",
+      "url": "/?tab=strength",
+      "icons": [{ "src": "/icon-192x192.jpg", "sizes": "192x192" }]
+    }
+  ]
+}
