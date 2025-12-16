@@ -21,13 +21,13 @@ export default function SportsLayout({ children, currentTool, onToolChange, onTa
   }
 
   return (
-    <div className="h-dvh bg-background text-foreground flex flex-col overflow-hidden">
-      <div className="flex-1 flex flex-col max-w-sm sm:max-w-md mx-auto w-full min-h-0">
+    <div className="bg-background text-foreground flex flex-col relative">
+      <div className="flex-1 flex flex-col max-w-sm sm:max-w-md mx-auto w-full h-full min-h-dvh">
         {/* Main content area */}
-        <div className="flex-1 flex flex-col min-h-0 p-4 overflow-hidden">{children}</div>
+        <div className="flex-1 flex flex-col min-h-0 p-4 mb-auto">{children}</div>
 
         {/* Bottom tab navigation */}
-        <div className="flex justify-center p-4 pt-2">
+        <div className="flex justify-center p-4 pt-2 sticky bottom-0 left-0">
           <div className="grid grid-cols-5 bg-muted rounded-lg p-1 w-full gap-1">
             <Button
               variant={currentTool === "stopwatch" ? "default" : "ghost"}
