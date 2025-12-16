@@ -21,7 +21,7 @@ export default function SportsLayout({ children, currentTool, onToolChange, onTa
   }
 
   return (
-    <div className="bg-background text-foreground flex flex-col relative">
+    <div className="bg-gradient-to-r from-teal-400 to-yellow-200 text-foreground flex flex-col relative">
       <div className="flex-1 flex flex-col max-w-sm sm:max-w-md mx-auto w-full h-full min-h-dvh">
         {/* Main content area */}
         <div className="flex-1 flex flex-col min-h-0 p-4 mb-auto">{children}</div>
